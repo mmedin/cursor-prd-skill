@@ -1,6 +1,6 @@
 # Technical Specifications Template
 
-Use this template to generate `docs/technical-specs.md`. This document translates product requirements into technical boundaries and constraints without prescribing implementation (unless the user has chosen a tech stack).
+Use this template to generate `docs/technical-specs.md`. This document translates product requirements into technical boundaries and constraints without prescribing implementation (unless the user has chosen a tech stack). By default, assume the skill’s **reference architecture**: presentation (client) + **REST over HTTP** backend API + **database** + optional third-party integrations—unless discovery documented a different shape (then adapt sections accordingly).
 
 ---
 
@@ -14,7 +14,7 @@ Use this template to generate `docs/technical-specs.md`. This document translate
 ## 1. System Overview
 
 ### 1.1 Architecture Summary
-[High-level description of the system architecture. If tech stack is defined, state it. If not, describe the architecture in abstract terms (e.g. "client-server", "event-driven", "serverless").]
+[High-level description. Default: three logical tiers—presentation (e.g. web or mobile UI), backend with **REST HTTP** API, persisted data in a **database** (or equivalent store), optional integrations. Name the actual stack only if the user provided it. If the product diverges from this reference (e.g. CLI-only, GraphQL-primary, event-only), state that explicitly here and reflect it in the API section.]
 
 ### 1.2 System Context Diagram
 [Describe the system boundaries: what is inside the system vs. external. Use a Mermaid diagram if helpful:]
@@ -53,12 +53,14 @@ erDiagram
 
 ### 3.1 API Surface
 
-Define the public interfaces the system exposes. Do NOT prescribe REST vs GraphQL unless the user has decided.
+**Default:** describe the backend’s public contract as **REST over HTTP** (resource paths, methods, request/response shapes, status codes). This is a contract style, not a framework choice.
 
-| Endpoint/Operation | Purpose | Related Feature |
-|--------------------|---------|-----------------|
-| [e.g. Create User] | [Registers a new user] | F-001 |
-| [e.g. List Projects] | [Returns user's projects] | F-003 |
+**Alternatives:** If the user chose GraphQL, gRPC, WebSockets-only, or no HTTP API (e.g. CLI), replace this subsection with the appropriate contract format and link operations to features the same way.
+
+| HTTP method & path (or operation ID) | Purpose | Related Feature |
+|-----------------------------------|---------|-----------------|
+| [e.g. POST /users] | [Registers a new user] | F-001 |
+| [e.g. GET /projects] | [Returns user's projects] | F-003 |
 
 ### 3.2 Authentication & Authorization
 - [Authentication method if decided, or "TBD - requires auth mechanism"]

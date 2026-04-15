@@ -27,9 +27,20 @@ Regardless of path, the following 7 fields must be resolved before moving to Pha
 6. **Known constraints**: Regulatory, platform, integration, timeline, budget constraints.
 7. **Key user journeys**: The 3-5 most critical workflows.
 
+#### Reference architecture (default)
+
+Before Phase 2, confirm whether the product fits the skill’s **default high-level topology** (no specific frameworks or vendors):
+
+- **Presentation**: user-facing client (e.g. web UI, mobile app).
+- **Backend**: application logic behind a **REST over HTTP** API (resources, verbs, status codes as the default contract style).
+- **Persistence**: a **database** (or equivalent durable store) for authoritative data.
+- **Integrations**: optional **outbound** calls to third-party services (payments, email, identity, etc.).
+
+**Escape hatch:** If the product does *not* fit this model (e.g. CLI-only, GraphQL or gRPC as the primary contract, serverless event-only, embedded firmware, batch-only data pipeline), surface that during discovery, state it explicitly in `technical-specs.md` (architecture summary + API section), and generate epics/tasks that match the chosen shape—do not force REST or three-tier wording where it does not apply.
+
 #### Path A: No Input Document
 
-Conduct a structured interview. If the host environment offers structured prompts (multiple-choice, forms, or similar), use them to reduce back-and-forth; otherwise ask conversationally. Cover all 7 fields above.
+Conduct a structured interview. If the host environment offers structured prompts (multiple-choice, forms, or similar), use them to reduce back-and-forth; otherwise ask conversationally. Cover all 7 fields above and confirm or adjust the **reference architecture** (see previous subsection).
 
 #### Path B: User Provides a Document
 
@@ -58,6 +69,7 @@ When the user attaches or references a document (brief, one-pager, meeting notes
 - Missing fields (information not in the document at all).
 - Clarifications on ambiguous or contradictory content.
 - Confirmation of inferred assumptions.
+- If system shape is unclear, confirm the **reference architecture** (presentation + REST API + DB + optional integrations) or capture an explicit deviation for `technical-specs.md`.
 
 Do NOT re-ask information that is already clear in the document. Respect the user's existing work.
 
@@ -120,14 +132,18 @@ Every task in `epics-and-tasks.md` must trace back to a user story, which traces
 These documents will be fed to an AI coding agent. Optimize for:
 
 - **Parseable structure**: Consistent heading levels, numbered IDs, standardized formats.
-- **Actionable specificity**: Each task should be completable by an agent in a single session without ambiguity.
+- **Actionable specificity**: Each task should be completable by an agent in a single session without ambiguity. Prefer **contract-level** clarity (behavior, data rules, API operations); use **repo-level** detail (file paths, exact CLI commands) when the user has a codebase or stack—otherwise mark those as TBD and refine after repository bootstrap.
 - **Constraint-first**: State constraints and guardrails before implementation details. Agents work better when they know boundaries upfront.
 - **Verifiable outcomes**: Every requirement and task should have a clear definition of done that an agent (or test) can verify.
 - **Progressive context**: Start each document with an overview, then drill into detail. Agents read top-down.
 
-### Technology Agnosticism
+### Technology agnosticism and reference architecture
 
-The skill is technology-agnostic. Do NOT recommend specific frameworks, languages, or tools unless the user has already chosen them. If the user provides a tech stack, document it in `technical-specs.md`. If not, leave technology decisions as open constraints.
+**Implementation-agnostic:** Do NOT recommend or assume specific frameworks, languages, cloud vendors, or databases unless the user has already chosen them. If the user provides a tech stack, document it in `technical-specs.md`. If not, leave concrete technology choices as open decisions while still specifying **contracts** (data model, API operations, integrations, NFRs).
+
+**Reference architecture (default):** For typical greenfield products, structure `technical-specs.md` and `epics-and-tasks.md` around the default topology in **Reference architecture (default)** under Phase 1: presentation + **REST HTTP API** + **database** + optional third-party integrations. REST here means the *shape of the API contract* (resources, HTTP methods, JSON payloads as appropriate), not a particular library.
+
+**Atomicity:** Tasks should be atomic at the **contract / behavior** level first (what must be true when done). Add **repository-bound** instructions (paths, commands from the project’s toolchain) when known; if the repo does not exist yet, state TBD and rely on a follow-up pass once scaffolding exists.
 
 ## Completeness Checklist
 
@@ -139,7 +155,7 @@ Before presenting the draft to the user, verify:
 - [ ] All tasks reference a user story and have a clear definition of done
 - [ ] Scope boundaries are explicitly stated in `prd.md`
 - [ ] No orphan requirements (every requirement traces to at least one task)
-- [ ] No technology assumptions unless explicitly provided by the user
+- [ ] No framework, language, or vendor assumptions unless explicitly provided by the user (reference topology and REST-style API contracts are allowed as the default; deviations must be stated in `technical-specs.md`)
 - [ ] `technical-specs.md` includes data model, API boundaries, and integration points
 - [ ] Security, performance, and accessibility considerations are addressed
 

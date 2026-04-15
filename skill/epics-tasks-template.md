@@ -1,6 +1,6 @@
 # Epics & Tasks Template
 
-Use this template to generate `docs/epics-and-tasks.md`. This is the document most directly consumed by an AI coding agent. Each task must be granular enough for an agent to complete in a single session.
+Use this template to generate `docs/epics-and-tasks.md`. This is the document most directly consumed by an AI coding agent. Each task must be granular enough for an agent to complete in a single session. Align tasks with `technical-specs.md` (default: **REST API** + **database** + optional integrations); when the repository or toolchain is not fixed yet, keep **Repo binding** and toolchain-specific DoD lines as `TBD` and refine after bootstrap.
 
 ---
 
@@ -47,24 +47,33 @@ List epics in the order they should be implemented, considering dependencies:
 ### T-001: [Task Title]
 - **Story:** US-001
 - **Status:** Not Started
+- **Contract references:** [Pointers to `technical-specs.md` sections or tables, e.g. §3.1 Create User, §2.1 User entity]
+- **Assumptions:** [Explicit, e.g. auth already exists from T-00X; or "none"]
+- **Repo binding:** [Concrete paths, packages, or commands—use `TBD` until the repo exists, then fill in a refinement pass]
 - **Description:** [Precise description of what to build or change]
-- **Definition of Done:**
-  - [ ] [Specific, verifiable outcome]
-  - [ ] [Specific, verifiable outcome]
-  - [ ] [Tests pass / linter clean / build succeeds]
+- **Definition of Done (contract / behavior):**
+  - [ ] [Specific, verifiable product or API outcome]
+  - [ ] [Specific, verifiable product or API outcome]
+- **Definition of Done (toolchain — when repo exists):**
+  - [ ] [Tests pass / linter clean / build succeeds — or TBD]
 - **Agent Instructions:**
   - [Specific constraints or patterns the agent must follow]
-  - [Files or directories to create/modify]
+  - [Files or directories to create/modify — or TBD]
   - [What NOT to do]
 - **Depends on:** None | T-XXX
 
 ### T-002: [Task Title]
 - **Story:** US-001
 - **Status:** Not Started
+- **Contract references:** [...]
+- **Assumptions:** [...]
+- **Repo binding:** [...]
 - **Description:** [Precise description]
-- **Definition of Done:**
+- **Definition of Done (contract / behavior):**
   - [ ] [Outcome]
   - [ ] [Outcome]
+- **Definition of Done (toolchain — when repo exists):**
+  - [ ] [Outcome — or TBD]
 - **Agent Instructions:**
   - [Instructions]
 - **Depends on:** T-001
@@ -102,8 +111,10 @@ graph TD
 ## Guidelines for Writing Tasks
 
 - **One concern per task.** A task should touch a focused area of the codebase.
+- **Link to the contract.** Use **Contract references** so the task maps cleanly to `technical-specs.md`. Call out **Assumptions** so a stateless agent does not guess hidden dependencies.
+- **Repo binding.** Once a repository exists, fill **Repo binding** and toolchain DoD items with real paths and commands; before that, `TBD` is acceptable if behavior-level DoD is complete.
 - **Include Agent Instructions.** These are direct instructions for the AI agent: what patterns to follow, what files to touch, what to avoid.
-- **Definition of Done must be verifiable.** Prefer automated checks: "tests pass", "linter reports zero errors", "build succeeds", "endpoint returns 200".
+- **Definition of Done must be verifiable.** Split **behavior/contract** outcomes (always) from **toolchain** checks (tests, linter, build) when the project’s commands are known; prefer automated checks where they exist.
 - **Order by dependency.** The agent should be able to pick up tasks top to bottom without needing to jump around.
 - **Size tasks for a single agent session.** If a task would take a human more than 2-4 hours, break it down further.
 - **Never leave implicit context.** The agent has no memory of previous tasks. Each task must be self-contained with enough context to execute.

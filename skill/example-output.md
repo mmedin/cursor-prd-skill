@@ -2,6 +2,8 @@
 
 This shows a condensed example of the four documents generated for a hypothetical task management app. In a real output, each document would be a separate file in `docs/`.
 
+**Note:** TaskFlow follows the skill’s **default reference architecture** (client + REST HTTP backend + persisted data). Epics/tasks therefore read like a typical web product; a different topology would change `technical-specs.md` and task wording accordingly.
+
 ---
 
 ## docs/prd.md (excerpt)

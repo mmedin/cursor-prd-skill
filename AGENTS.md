@@ -35,7 +35,8 @@ Generates a system of 4 interconnected PRD documents in a target project's `docs
 | Interaction model | Hybrid (draft, feedback, refine) | Balances speed with accuracy |
 | Input document handling | Gap analysis + validation | Ask only what's missing; validate what's present |
 | Task granularity | Down to agent-ready tasks | Each task completable in a single agent session |
-| Tech stack stance | Agnostic | Skill doesn't prescribe technology |
+| Implementation stance | Agnostic (no frameworks/vendors by default) | Users may supply a stack; otherwise specs stay implementation-neutral |
+| Reference architecture | Default high-level topology | Presentation + REST HTTP API + database + optional third-party integrations; discovery captures deviations |
 | User persona | Product Manager | Language and workflow optimized for PM mental model |
 | Storage of output | `docs/` folder in target project | Standard location, version-controlled |
 | Skill distribution | `skill/` dir at repo root | Users copy this folder to install |
