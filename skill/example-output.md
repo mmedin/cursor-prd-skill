@@ -110,14 +110,20 @@ erDiagram
     BOARD ||--|{ TASK : "contains"
     USER ||--o{ TASK : "assigned to"
 
+### 2.3 Data Constraints
+
+- Board: 3–7 column names, unique per board; max 500 tasks per board
+- Task: title required; `position` integer for ordering within a column
+
 ### 3.1 API Surface
 
-| Operation | Purpose | Related Feature |
-|-----------|---------|-----------------|
-| Create Task | Add a task to a board | F-001 |
-| Move Task | Change task column/position | F-001 |
-| List Tasks | Fetch all tasks for a board | F-001 |
-| Invite Member | Add user to team | F-002 |
+| HTTP method & path | Purpose | Related Feature |
+|--------------------|---------|-----------------|
+| POST /teams/{teamId}/boards | Create board | F-001 |
+| POST /boards/{boardId}/tasks | Create task | F-001 |
+| PATCH /tasks/{taskId} | Update task / move between columns | F-001 |
+| GET /boards/{boardId}/tasks | List tasks for a board | F-001 |
+| POST /teams/{teamId}/invitations | Invite member | F-002 |
 
 ### 3.2 Authentication & Authorization
 
@@ -193,7 +199,9 @@ erDiagram
 # TaskFlow — Epics & Tasks
 
 **Version:** 1.0
+**Date:** 2026-04-15
 **Related PRD:** [prd.md](prd.md)
+**Related Stories:** [user-stories.md](user-stories.md)
 
 ## Epic Overview
 
@@ -216,52 +224,59 @@ erDiagram
 ### T-001: Create Board data model and CRUD
 - **Story:** US-001
 - **Status:** Not Started
+- **Contract references:** technical-specs.md §2.1 Board entity; §2.2 Board–Team relationship; aligns with POST /teams/{teamId}/boards (§3.1)
+- **Assumptions:** Team model and persistence layer from EP-002 exist; auth middleware exists for later API tasks
+- **Repo binding:** TBD — e.g. `src/db/board.*`, `src/models/board.*` after scaffold
 - **Description:** Define the Board entity with columns stored as JSON.
-  Implement create, read, update, delete operations.
-- **Definition of Done:**
+  Implement create, read, update, delete operations (no HTTP layer in this task).
+- **Definition of Done (contract / behavior):**
   - [ ] Board entity exists with fields: id, team_id, title, columns, created_at
-  - [ ] CRUD operations work and pass unit tests
+  - [ ] CRUD operations enforce title required, 3–7 columns, unique column names within a board
   - [ ] Default columns on creation: "To Do", "In Progress", "Done"
-  - [ ] Build succeeds, linter clean
+- **Definition of Done (toolchain — when repo exists):**
+  - [ ] Unit tests cover CRUD and validation; `TBD` — project test command after bootstrap
+  - [ ] Build / linter clean; `TBD` — project lint and build commands after bootstrap
 - **Agent Instructions:**
-  - Create the Board model in the data layer
-  - Columns are stored as ordered JSON array of {id, name} objects
-  - Include validation: title required, 3-7 columns, unique column names
-  - Do NOT implement the API layer yet
+  - Columns: ordered JSON array of `{id, name}` objects
+  - Do NOT implement the REST API layer yet
+  - Use **Repo binding** once the repository layout is known
 - **Depends on:** None
 
 ### T-002: Create Task data model and CRUD
 - **Story:** US-001
 - **Status:** Not Started
+- **Contract references:** technical-specs.md §2.1 Task entity; §3.1 POST/PATCH/GET task routes; PRD F-001 constraints (500 tasks per board)
+- **Assumptions:** T-001 complete (Board exists)
+- **Repo binding:** TBD — data layer module paths after scaffold
 - **Description:** Define the Task entity. Implement CRUD with position
   ordering within columns.
-- **Definition of Done:**
-  - [ ] Task entity exists with fields: id, board_id, title, description,
-        assignee_id, status, position, due_date, created_at
-  - [ ] Position is an integer for ordering within a column
-  - [ ] Moving a task updates positions of affected tasks
-  - [ ] Max 500 tasks per board enforced
-  - [ ] Unit tests pass
+- **Definition of Done (contract / behavior):**
+  - [ ] Task entity: id, board_id, title, description, assignee_id, status, position, due_date, created_at
+  - [ ] Position integer ordering within a column; moves update affected positions
+  - [ ] Max 500 tasks per board enforced at persistence layer
+- **Definition of Done (toolchain — when repo exists):**
+  - [ ] Unit tests pass; `TBD` — test command after bootstrap
 - **Agent Instructions:**
-  - Use a position integer with gaps (e.g. increments of 1000) to allow
-    inserts without reordering
-  - Enforce the 500-task limit at the data layer, not just the API
-  - Do NOT implement drag-and-drop UI — only the data operations
+  - Position gaps (e.g. increments of 1000) to reduce reorder churn
+  - Do NOT implement drag-and-drop UI — data operations only
 - **Depends on:** T-001
 
-### T-003: Board API endpoints
+### T-003: Board and Task REST endpoints
 - **Story:** US-001, US-002
 - **Status:** Not Started
-- **Description:** Expose Board and Task CRUD via API endpoints.
-- **Definition of Done:**
-  - [ ] Endpoints for board CRUD and task CRUD exist
-  - [ ] Move task endpoint accepts target column and position
-  - [ ] All endpoints require authentication
-  - [ ] Integration tests pass
+- **Contract references:** technical-specs.md §3.1 API Surface (board and task routes); §3.2 roles (authenticated callers)
+- **Assumptions:** T-001, T-002 complete; session/JWT validation available from EP-002
+- **Repo binding:** TBD — router/handler paths after scaffold (e.g. `src/api/boards.ts`)
+- **Description:** Expose Board and Task CRUD and task move via REST over HTTP per §3.1.
+- **Definition of Done (contract / behavior):**
+  - [ ] Routes exist for board CRUD, task CRUD, and move (column + position) matching §3.1
+  - [ ] All routes require authentication; responses use correct HTTP semantics (201, 404, 422, etc.)
+  - [ ] Request/response bodies match data constraints from §2.1 / §2.3
+- **Definition of Done (toolchain — when repo exists):**
+  - [ ] Integration tests pass; `TBD` — test command after bootstrap
 - **Agent Instructions:**
-  - Follow patterns from existing API layer if present
-  - Include input validation matching data model constraints
-  - Return appropriate HTTP status codes (201 created, 404 not found, etc.)
+  - Validate inputs against the same rules as the data layer
+  - Do not leak internal errors in production responses
 - **Depends on:** T-001, T-002
 ```
 
@@ -270,5 +285,6 @@ erDiagram
 This example demonstrates:
 - **Consistent IDs** (F-001 → US-001 → EP-001 → T-001) across all documents
 - **Traceability** from feature to story to epic to task
-- **Agent-ready tasks** with specific instructions, constraints, and verifiable outcomes
+- **Reference architecture** (client + REST + DB) with **contract references** on each task
+- **Contract vs toolchain DoD** — behavior is fully specified; commands and file paths stay **TBD** until the repo exists, then a refinement pass fills **Repo binding**
 - **Dependency ordering** so tasks can be picked up sequentially
