@@ -1,8 +1,8 @@
-# prd-writer — Cursor Agent Skill
+# prd-writer — Agent skill
 
-A Cursor agent skill that generates structured PRD (Product Requirements Document) systems optimized for AI coding agents.
+An agent skill that generates structured PRD (Product Requirements Document) systems optimized for AI coding agents.
 
-Given a product idea or an existing brief, the skill produces four interconnected documents ready to feed directly into Cursor's agent for implementation.
+Given a product idea or an existing brief, the skill produces four interconnected documents ready to feed into an AI coding agent for implementation.
 
 ## What It Generates
 
@@ -28,31 +28,35 @@ Every task traces back to a user story, which traces back to a feature. IDs are 
 
 ## Installation
 
-The `skill/` directory in this repo is the distributable unit. Copy it to one of the two supported locations:
+The `skill/` directory in this repo is the distributable unit. Copy it to the location your AI tool uses for skills or long-running instructions (check that product's documentation for paths and naming).
 
-### Option A: Personal (available across all your projects)
+No dependencies. No build step. Just copy the folder.
+
+### Cursor (example)
+
+**Personal (available across all your projects):**
 
 ```bash
 mkdir -p ~/.cursor/skills
 cp -r skill/ ~/.cursor/skills/prd-writer
 ```
 
-### Option B: Per-project (shared via repository)
+**Per-project (shared via repository):**
 
 ```bash
 mkdir -p <your-project>/.cursor/skills
 cp -r skill/ <your-project>/.cursor/skills/prd-writer
 ```
 
-No dependencies. No build step. Just copy the folder.
+### Other environments
+
+Copy `skill/` into whatever directory or bundle your client expects (global skills folder, project-level skills tree, or a single instruction file if you merge the Markdown yourself). Rename the destination folder if the host requires a specific skill id.
 
 ## Usage
 
-The skill activates automatically when Cursor's agent detects you want to write a PRD or start a new project. You can also invoke it manually:
+How you invoke the skill depends on your client: slash commands, `@` skill references, agent menus, or natural-language requests. Follow your tool's workflow to attach or enable the skill, then describe the product or attach a brief.
 
-1. Open the agent chat in Cursor.
-2. Type `/prd-writer` or describe what you want to build.
-3. The skill will either interview you or analyze a document you provide.
+**Example (Cursor):** open the agent chat, use `/prd-writer` or describe what you want to build. The skill will either interview you or analyze a document you provide.
 
 ### With No Input Document
 
@@ -83,7 +87,7 @@ skill/
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Target agent | Cursor | Optimized for IDE-native agent workflows |
+| Target agent | AI coding agents with repo context | Same documents work across IDE assistants, CLI agents, and similar hosts |
 | Scope | Greenfield projects | Templates assume new product definition |
 | Output | 4 interrelated documents | Separation of concerns; each serves a different stage |
 | Interaction | Hybrid (draft, feedback, refine) | Balances speed with accuracy |
@@ -97,4 +101,4 @@ MIT
 
 ---
 
-Built with the help of AI coding agents in Cursor.
+Built with the help of AI coding agents.

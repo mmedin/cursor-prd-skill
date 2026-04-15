@@ -1,6 +1,6 @@
 # Epics & Tasks Template
 
-Use this template to generate `docs/epics-and-tasks.md`. This is the document most directly consumed by Cursor's AI agent. Each task must be granular enough for an agent to complete in a single session.
+Use this template to generate `docs/epics-and-tasks.md`. This is the document most directly consumed by an AI coding agent. Each task must be granular enough for an agent to complete in a single session.
 
 ---
 

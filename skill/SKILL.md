@@ -5,7 +5,7 @@ description: Generate structured PRD document systems optimized for AI coding ag
 
 # PRD Writer for AI Agents
 
-Generates a system of interconnected product requirement documents optimized for consumption by Cursor's AI agent. Targets Product Managers defining greenfield projects.
+Generates a system of interconnected product requirement documents optimized for consumption by AI coding agents (IDE assistants, CLI coding agents, or similar with repository context). Targets Product Managers defining greenfield projects.
 
 ## Workflow
 
@@ -29,7 +29,7 @@ Regardless of path, the following 7 fields must be resolved before moving to Pha
 
 #### Path A: No Input Document
 
-Conduct a structured interview. Use `AskQuestion` when available, otherwise ask conversationally. Cover all 7 fields above.
+Conduct a structured interview. If the host environment offers structured prompts (multiple-choice, forms, or similar), use them to reduce back-and-forth; otherwise ask conversationally. Cover all 7 fields above.
 
 #### Path B: User Provides a Document
 
@@ -117,7 +117,7 @@ Every task in `epics-and-tasks.md` must trace back to a user story, which traces
 
 ### For Agent Consumption
 
-These documents will be fed to Cursor's AI agent. Optimize for:
+These documents will be fed to an AI coding agent. Optimize for:
 
 - **Parseable structure**: Consistent heading levels, numbered IDs, standardized formats.
 - **Actionable specificity**: Each task should be completable by an agent in a single session without ambiguity.
