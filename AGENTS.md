@@ -1,0 +1,59 @@
+# AGENTS.md — cursor-prd-skill
+
+## Project Purpose
+
+Development and distribution repository for the `prd-writer` Cursor Agent Skill. This repo is NOT a consumer of the skill — it is where the skill is authored, tested, and published.
+
+## Repository Structure
+
+```
+cursor-prd-skill/
+├── README.md              # User-facing documentation and installation instructions
+├── AGENTS.md              # This file — context for agents working on this repo
+├── LICENSE                # MIT license
+├── .gitignore
+└── skill/                 # The distributable skill (what users copy to install)
+    ├── SKILL.md           # Main skill definition (entry point)
+    ├── prd-template.md
+    ├── technical-specs-template.md
+    ├── user-stories-template.md
+    ├── epics-tasks-template.md
+    └── example-output.md
+```
+
+## What the Skill Does
+
+Generates a system of 4 interconnected PRD documents in a target project's `docs/` folder, optimized for consumption by Cursor's AI agent.
+
+## Key Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Target agent | Cursor only | Optimized for IDE-native agent workflows |
+| Project scope | Greenfield projects | Templates assume new product definition |
+| Output format | 4 interrelated documents | Separation of concerns; each doc serves a different stage |
+| Interaction model | Hybrid (draft, feedback, refine) | Balances speed with accuracy |
+| Input document handling | Gap analysis + validation | Ask only what's missing; validate what's present |
+| Task granularity | Down to agent-ready tasks | Each task completable in a single agent session |
+| Tech stack stance | Agnostic | Skill doesn't prescribe technology |
+| User persona | Product Manager | Language and workflow optimized for PM mental model |
+| Storage of output | `docs/` folder in target project | Standard location, version-controlled |
+| Skill distribution | `skill/` dir at repo root | Users copy this folder to install |
+
+## Conventions
+
+- **IDs across generated docs**: Features (F-NNN), User Stories (US-NNN), Epics (EP-NNN), Tasks (T-NNN)
+- **Language**: Generated documents default to English unless user requests otherwise
+- **Templates**: Agent reads templates from `skill/` before generating each document
+- **SKILL.md limit**: Must stay under 500 lines per Cursor best practices
+- **References in SKILL.md**: One level deep only (SKILL.md links to sibling files, never nested)
+
+## Development Guidelines
+
+When modifying this skill:
+
+1. Edit files inside `skill/`. That is the distributable unit.
+2. Keep `SKILL.md` under 500 lines. Use progressive disclosure — put detail in template files.
+3. Test by copying `skill/` to `~/.cursor/skills/prd-writer/` and invoking the skill in a test project.
+4. Update `README.md` if any user-facing behavior changes.
+5. Update this `AGENTS.md` if any architectural decisions change.
